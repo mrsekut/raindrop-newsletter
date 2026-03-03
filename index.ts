@@ -2,6 +2,7 @@ import { loadConfig } from './src/config.ts';
 import { fetchLatest, fetchSince } from './src/raindrop.ts';
 import { loadState, saveState } from './src/state.ts';
 import { writeOutput } from './src/output.ts';
+import { summarizeEach, composeNewsletter } from './src/summarize.ts';
 
 async function main() {
   const config = loadConfig();
@@ -31,11 +32,12 @@ async function main() {
     console.log(`    ${r.link}`);
   }
 
-  // TODO: PR2 で summarizeEach + composeNewsletter を実装
-  const placeholder = raindrops
-    .map(r => `- [${r.title}](${r.link})`)
-    .join('\n');
-  const markdown = `# Newsletter ${new Date().toISOString().split('T')[0]}\n\n${placeholder}\n`;
+  console.log('\n各記事を要約中...');
+  const summaries = await summarizeEach(raindrops);
+  console.log(`要約完了: ${summaries.length} 件`);
+
+  console.log('ニュースレターを構成中...');
+  const markdown = await composeNewsletter(summaries);
 
   const filePath = await writeOutput(markdown, config.outputDir);
   console.log(`\n出力: ${filePath}`);

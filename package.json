@@ -9,5 +9,8 @@
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "dependencies": {
+    "@openai/codex-sdk": "^0.107.0"
   }
 }
