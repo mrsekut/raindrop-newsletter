@@ -1,8 +1,8 @@
-import { loadConfig } from './src/config.ts';
-import { fetchLatest, fetchSince } from './src/raindrop.ts';
-import { loadState, saveState } from './src/state.ts';
-import { writeOutput } from './src/output.ts';
-import { summarizeEach, composeNewsletter } from './src/summarize.ts';
+import { loadConfig } from './config.ts';
+import { fetchLatest, fetchSince } from './raindrop.ts';
+import { loadState, saveState } from './state.ts';
+import { writeOutput } from './output.ts';
+import { summarizeEach, composeNewsletter } from './summarize.ts';
 
 async function main() {
   const config = loadConfig();
