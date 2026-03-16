@@ -42,10 +42,11 @@ export async function fetchLatest(
 export async function fetchSince(
   token: string,
   since: Date,
+  max: number = 7,
 ): Promise<Raindrop[]> {
   const all: Raindrop[] = [];
   let page = 0;
-  while (true) {
+  while (all.length < max) {
     const { items } = await fetchPage(token, page);
     if (items.length === 0) break;
     const newItems = items.filter(r => new Date(r.created) > since);
@@ -53,5 +54,5 @@ export async function fetchSince(
     if (newItems.length < items.length) break;
     page++;
   }
-  return all;
+  return all.slice(0, max);
 }
