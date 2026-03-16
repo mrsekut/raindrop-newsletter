@@ -15,6 +15,16 @@ export type Summary = {
   summary: string;
 };
 
+export type Cluster = {
+  theme: string;
+  summaryIndices: number[];
+};
+
+export type ClusterResult = {
+  clusters: Cluster[];
+  standalone: number[];
+};
+
 export type State = {
   lastRun: string; // ISO 8601
 };

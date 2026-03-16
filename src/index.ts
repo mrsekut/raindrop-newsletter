@@ -2,7 +2,11 @@ import { loadConfig } from './config.ts';
 import { fetchLatest, fetchSince } from './raindrop.ts';
 import { loadState, saveState } from './state.ts';
 import { writeOutput } from './output.ts';
-import { summarizeEach, composeNewsletter } from './summarize.ts';
+import {
+  summarizeEach,
+  clusterSummaries,
+  composeNewsletter,
+} from './summarize.ts';
 
 async function main() {
   const config = loadConfig();
@@ -36,8 +40,14 @@ async function main() {
   const summaries = await summarizeEach(raindrops);
   console.log(`要約完了: ${summaries.length} 件`);
 
+  console.log('記事をクラスタリング中...');
+  const clusterResult = await clusterSummaries(summaries);
+  console.log(
+    `クラスタ: ${clusterResult.clusters.length} 個, 単独: ${clusterResult.standalone.length} 件`,
+  );
+
   console.log('ニュースレターを構成中...');
-  const markdown = await composeNewsletter(summaries);
+  const markdown = await composeNewsletter(summaries, clusterResult);
 
   const filePath = await writeOutput(markdown, config.outputDir);
   console.log(`\n出力: ${filePath}`);
