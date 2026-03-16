@@ -1,5 +1,5 @@
 import { loadConfig } from './config.ts';
-import { fetchLatest, fetchSince } from './raindrop.ts';
+import { fetchLatest, fetchSince, archiveRaindrops } from './raindrop.ts';
 import { loadState, saveState } from './state.ts';
 import { writeOutput } from './output.ts';
 import {
@@ -54,6 +54,22 @@ async function main() {
 
   await saveState(new Date());
   console.log('状態を保存しました。');
+
+  // アーカイブ確認
+  process.stdout.write(
+    '\nピックアップした記事をRaindropからアーカイブしますか？ (y/N): ',
+  );
+  const answer = await new Promise<string>(resolve => {
+    process.stdin.once('data', data => resolve(data.toString().trim()));
+  });
+
+  if (answer.toLowerCase() === 'y') {
+    const ids = raindrops.map(r => r._id);
+    await archiveRaindrops(config.raindropToken, ids);
+    console.log(`${ids.length} 件をアーカイブしました。`);
+  } else {
+    console.log('アーカイブをスキップしました。');
+  }
 }
 
 main().catch(console.error);

@@ -56,3 +56,26 @@ export async function fetchSince(
   }
   return all.slice(0, max);
 }
+
+export async function archiveRaindrops(
+  token: string,
+  ids: number[],
+): Promise<void> {
+  if (ids.length === 0) return;
+
+  // DELETE /raindrops/0 with ids moves them to Trash
+  const url = `${API_BASE}/raindrops/0`;
+  const res = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ ids }),
+  });
+  if (!res.ok) {
+    throw new Error(
+      `Raindrop archive error: ${res.status} ${await res.text()}`,
+    );
+  }
+}
